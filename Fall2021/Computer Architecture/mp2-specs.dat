@@ -1,0 +1,232 @@
+
+************************************
+** ECE MP2
+*** Srinivasan Subramaniyan
+************************
+********************************
+
+ st=0 rt='[pc] ->mar '  imar rac=1 rn=3
+ st=1 rt='[[mar]->mdr'  read
+ st=2 rt='[mdr]->ir' omdr iir
+ st=3 rt='[pc]+1-> q' rac=1 rn=3 ib p1 oadder 
+ st=4 rt='[q]->pc' oq wac=1 wn=3 
+     cond='ir1512' value=0 nst=10
+     cond ='ir64' value=0 nst=15
+     cond ='ir118'value=0 nst=16
+     cond ='ir118'value=6 nst=17
+     nst=10
+	
+ st=10 halt 
+
+
+ st=15
+       cond ='ir118' value=0 nst=100
+       cond ='ir118' value=1 nst=110
+       cond ='ir118' value=2 nst=120
+       cond ='ir118' value=3 nst=130
+       cond ='ir118' value=4 nst=140
+       cond ='ir118' value=5 nst=150
+       cond ='ir118' value=6 nst=155
+
+
+ st=16 
+       cond='ir64'value=1 nst=200
+       cond='ir64'value=2 nst=210
+       cond='ir64'value=3 nst=220
+       cond='ir64'value=4 nst=230
+       cond='ir64'value=5 nst=240
+   
+ st=17 
+       cond='ir64' value=5 nst=50
+       cond='ir64' value=0 nst=65
+       cond='ir64' value=1 nst=75
+       cond='ir64' value=2 nst=85
+       cond='ir64' value=3 nst=30
+
+
+
+
+*** ADD # -(DST)
+ st=30  rt='[pc]->mar' rac=1 rn=3 imar
+ st=31  rt='[pc]+1->pc'  rac=1 rn=3 ib p1 oadder 
+ st=32  rt='[oadder]->PC' wac=1 wn=3 oq   
+ st=33  rt='[[mar]]->mdr' read
+ st=34  rt='[mdr]->t4'  omdr it4
+ st=35  rt='[dst]->t1'   rac=3 it1
+ st=36  rt='[t1]-1 ->q'  oa comp oadder
+ st=37  rt='[q]->dest'   oq wac=3  
+ st=38  rt='[q]->mar'    oq imar
+ st=39  rt='[[mar]->mdr' read
+ st=40  rt='[mdr]->t1' omdr it1
+ st=41  rt='[t1]+[t4]->q' oa ot4 ib oadder newc newv
+ st=42  rt='[q]->mdr' oq imdr newz newn
+ st=43  rt='[mdr]->mar' write
+         nst=0
+
+
+
+
+*** ADD # X
+ st=50  rt='[pc]->mar' rac=1 rn=3 imar
+ st=51  rt='[pc]+1->pc'  rac=1 rn=3 ib p1 oadder 
+ st=52  rt='[oadder]->PC' wac=1 wn=3 oq   
+ st=53  rt='[[mar]]->mdr' read
+ st=54  rt='[mdr]->t1'   omdr it1
+ st=55  rt='[pc]->mar' rac=1 rn=3 imar 
+ st=56  rt='[[mar]]->mdr' read
+ st=57  rt='[mdr]->mar' imar omdr
+ st=58  rt='[pc]+1->pc'  rac=1 rn=3 ib p1 oadder 
+ st=59  rt='[oadder]->PC' wac=1 wn=3 oq 
+ st=60  rt='[[mar]]->mdr' read
+ st=61  rt='[mdr]+t1->q' omdr oa ib oadder newc newv
+ st=62  rt='[q]->mdr' oq imdr newz newn
+ st=63  rt='[mdr]->[mar]' write
+         nst=0     
+
+*** ADD # [DST]    
+ st=65  rt='[pc]->mar' rac=1 rn=3 imar
+ st=66  rt='[pc]+1->pc'  rac=1 rn=3 ib p1 oadder 
+ st=67  rt='[oadder]->PC' wac=1 wn=3 oq   
+ st=68  rt='[[mar]]->mdr' read
+ st=69  rt='[mdr]->t1' omdr it1
+ st=70  rt='[t1]+[dst]->q' oa rac=3 ib oadder newc newv
+ st=71  rt='[q]-> dst' oq wac=3 newz newn
+	nst=0
+
+*** ADD # [[DST]]    
+ st=75  rt='[pc]->mar' rac=1 rn=3 imar
+ st=76  rt='[pc]+1->pc'  rac=1 rn=3 ib p1 oadder 
+ st=77  rt='[oadder]->PC' wac=1 wn=3 oq   
+ st=78  rt='[[mar]]->mdr' read
+ st=79  rt='[mdr]->t1' omdr it1
+ st=80  rt='[dst]->mar' rac=3 imar
+ st=81  rt='[[mar]]->mdr' read
+ st=82  rt='[mdr]+t1->q'omdr oa ib oadder newc newv
+ st=83  rt='[q]->mdr' oq imdr newz newn
+ st=84  rt='[mdr]->[mar]' write
+        nst=0
+
+  
+*** ADD # (DST)+
+ st=85  rt='[pc]->mar' rac=1 rn=3 imar
+ st=86  rt='[pc]+1->pc'  rac=1 rn=3 ib p1 oadder 
+ st=87  rt='[oadder]->PC' wac=1 wn=3 oq   
+ st=88  rt='[[mar]]->mdr' read
+ st=89  rt='[mdr]->t1' omdr it1
+ st=90 rt='[dst]->mar' rac=3 imar
+ st=91 rt='[dst]+1->q'  ib rac=3 p1 oadder 
+ st=92 rt='[q]->dst' oq wac=3 
+        nst=81
+
+ 
+           
+
+
+**************************************************
+************************* I
+****************************************************
+****** ADD [SRC] [DEST] for registers
+*********************************************
+
+ st=100 rt='[src]->t1' rac=2 it1
+ st=101 rt='[t1]+[dst]->q'oa rac=3 ib oadder newc newv
+ st=102 rt='[q]->dst' oq wac=3 newz newn
+      nst=0 
+
+******* ADD [[SRC]] [DEST] 
+ st=110 rt='[src]->mar'  rac=2 imar
+ st=111 rt='[[mar]]->mdr' read
+ st=112 rt='[mdr]->t1'   omdr it1
+ st=113 rt='[t1]+[dst]->q' oa rac=3 ib oadder newc newv
+ st=114 rt='[q]->dst' oq wac=3 newz newn
+	nst=0
+
+
+******* ADD (SRC)+ [DEST]
+ st=120 rt='[src]->mar' imar rac=2 
+ st=121 rt='[src]+1->q' ib p1 oadder rac=2 
+ st=122 rt='[q]->src'  wac=2 oq 
+	nst=111
+ 
+
+******* ADD -(SRC) [DEST]
+ st=130 rt='[src]->t1'  rac=2 it1   
+ st=131 rt='[oa]-1>[q]' oa comp oadder 
+ st=132 rt='[q]-> [src]'  wac=2 oq
+	nst=110
+
+******** Add n(RK) [Dest]
+ st=140 rt='[src]->t1'  rac=2 it1   
+ st=141 rt='[PC]->mar' rac=1 rn=3 imar
+ st=142 rt='[[mar]->mdr' read
+ st=143 rt='[mdr]+[t1]->Q' omdr oa ib oadder 
+ st=144 rt='[Oadder]->mar'  oq imar 
+ st=145 rt='[pc]+1->pc'  rac=1 rn=3 ib p1 oadder 
+ st=146 rt='[oadder]->PC' wac=1 wn=3 oq 
+         nst=111
+
+
+******** Add (X) [Dest]
+ st=150 rt='[pc]->mar' rac=1 rn=3 imar 
+ st=151 rt='[[mar]]->mdr' read
+ st=152 rt='[mdr]->mar' imar omdr
+         nst=145
+
+******** ADD n [Dest]
+ st=155 rt='[pc]->mar' rac=1 rn=3 imar
+ 	 nst=145
+
+
+*********************************************************
+****************Inst2
+*********************************************************
+
+****** ADD [SRC] [[DEST]] for registers
+
+
+ st=200 rt='[dst]->imar' rac=3 imar
+ st=201 rt='[[mar]]->mdr'read
+ st=202 rt='[mdr]->it1' omdr it1
+ st=203 rt='[t1]+[src]->q' oa rac=2 ib oadder newc newv
+ st=204 rt='[q]->mdr' oq imdr newz newn
+ st=205 rt='[mdr]->[mar]' write
+         nst=0
+
+
+****** ADD [SRC] (DEST)+ for registers
+
+
+ st=210 rt='[dst]->imar' rac=3 imar
+ st=211 rt='[dst]+1->q'  ib rac=3 p1 oadder 
+ st=212 rt='[q]->dst' oq wac=3 
+         nst=201
+
+
+
+****** ADD [SRC] -(DEST) for registers
+
+ st=220 rt='[dst]->t1'   rac=3 it1
+ st=221 rt='[t1]-1 ->q'  oa comp oadder
+ st=222 rt='[q]->dest'   oq wac=3  
+ st=223 rt='[q]->mar'    oq imar
+         nst=201
+ 
+
+****** ADD [SRC] n(DEST) for registers
+
+ st=230 rt='[dst]->t1'   rac=3 it1
+ st=231 rt='[PC]->MAR'   rac=1 rn=3 imar
+ st=232 rt='[[mar]]->mdr'read
+ st=233 rt='[mdr]+t1->[q]' omdr ib  oa oadder 
+ st=234 rt='[q]->mar' oq imar 
+ st=235 rt='[pc]+1->pc' rn=3 rac=1 ib p1 oadder 
+ st=236 rt='[q]->pc' oq wac=1 wn=3 
+ 	nst=201
+
+****** ADD [SRC] X for registers
+
+ st=240 rt='[PC]->MAR'   rac=1 rn=3 imar
+ st=241 rt='[[mar]]->mdr'read
+ st=242 rt='[mdr]->mar'imar omdr
+         nst=235	
+
